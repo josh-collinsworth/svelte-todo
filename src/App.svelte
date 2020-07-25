@@ -14,8 +14,6 @@
 	const syncItems = () => {
 		localStorage.setItem(listName, JSON.stringify(items))
 		localStorage.setItem(`${listName}Options`, JSON.stringify(options))
-		items = retrieveStoredItems()
-		options = retrieveStoredOptions()
 	}
 
 	const handleCheck = id => {
@@ -30,11 +28,11 @@
 
 	const addNewItem = () => {
 		if (!newItem) return
-		items.push({
+		items = [...items, {
 			name: newItem,
 			id: Date.now(),
 			checked: false
-		})
+		}]
 		newItem = ''
 		syncItems()
 	}
@@ -60,11 +58,12 @@
 
 	let existingItems = retrieveStoredItems()
 	let existingOptions = retrieveStoredOptions()
-	let items = existingItems || []
-	let options = existingOptions || {
+	const defaultOptions = {
 		sortByComplete: false,
 		hideComplete: false
 	}
+	let items = existingItems || []
+	let options = existingOptions || defaultOptions
 	let newItem = ''
 
 	$: filteredItems = items
@@ -96,7 +95,6 @@
 			<button on:click={checkAllItems}>✅ Check all</button>
 		{/if}
 			<button on:click={deleteAllItems}>❌ Delete all</button>
-
 
 		<hr>
 
